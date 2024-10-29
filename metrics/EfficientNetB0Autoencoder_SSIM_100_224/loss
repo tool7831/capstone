@@ -1,0 +1,45 @@
+Epoch 1, Loss: 0.5758
+Epoch 2, Loss: 0.5585
+Epoch 3, Loss: 0.5080
+Epoch 4, Loss: 0.4330
+Epoch 1, Train Loss: 0.5739 Valid Loss: 0.5652
+Epoch 2, Train Loss: 0.5369 Valid Loss: 0.4688
+Epoch 3, Train Loss: 0.4479 Valid Loss: 0.4116
+Epoch 4, Train Loss: 0.3993 Valid Loss: 0.3715
+Epoch 5, Train Loss: 0.3675 Valid Loss: 0.3367
+Epoch 6, Train Loss: 0.3221 Valid Loss: 0.2956
+Epoch 7, Train Loss: 0.2929 Valid Loss: 0.2711
+Epoch 8, Train Loss: 0.2757 Valid Loss: 0.2556
+Epoch 9, Train Loss: 0.2580 Valid Loss: 0.2445
+Epoch 10, Train Loss: 0.2460 Valid Loss: 0.2368
+Epoch 11, Train Loss: 0.2351 Valid Loss: 0.2235
+Epoch 12, Train Loss: 0.2161 Valid Loss: 0.2107
+Epoch 13, Train Loss: 0.2040 Valid Loss: 0.2017
+Epoch 14, Train Loss: 0.1958 Valid Loss: 0.1979
+Epoch 15, Train Loss: 0.1885 Valid Loss: 0.1937
+Epoch 16, Train Loss: 0.1805 Valid Loss: 0.1910
+Epoch 17, Train Loss: 0.1723 Valid Loss: 0.1921
+Epoch 18, Train Loss: 0.1665 Valid Loss: 0.1900
+Epoch 19, Train Loss: 0.1598 Valid Loss: 0.1828
+Epoch 20, Train Loss: 0.1543 Valid Loss: 0.1826
+Epoch 21, Train Loss: 0.1514 Valid Loss: 0.1818
+Epoch 22, Train Loss: 0.1447 Valid Loss: 0.1800
+Epoch 23, Train Loss: 0.1411 Valid Loss: 0.1767
+Epoch 24, Train Loss: 0.1383 Valid Loss: 0.1773
+Epoch 25, Train Loss: 0.1354 Valid Loss: 0.1765
+Epoch 26, Train Loss: 0.1322 Valid Loss: 0.1753
+Epoch 27, Train Loss: 0.1291 Valid Loss: 0.1745
+Epoch 28, Train Loss: 0.1272 Valid Loss: 0.1739
+Epoch 29, Train Loss: 0.1260 Valid Loss: 0.1721
+Epoch 30, Train Loss: 0.1226 Valid Loss: 0.1718
+Epoch 31, Train Loss: 0.1198 Valid Loss: 0.1705
+Epoch 32, Train Loss: 0.1180 Valid Loss: 0.1728
+Epoch 33, Train Loss: 0.1177 Valid Loss: 0.1713
+Epoch 34, Train Loss: 0.1151 Valid Loss: 0.1756
+Epoch 35, Train Loss: 0.1075 Valid Loss: 0.1684
+Epoch 36, Train Loss: 0.1044 Valid Loss: 0.1673
+Epoch 37, Train Loss: 0.1033 Valid Loss: 0.1691
+Epoch 38, Train Loss: 0.1020 Valid Loss: 0.1683
+Epoch 39, Train Loss: 0.1014 Valid Loss: 0.1698
+Epoch 40, Train Loss: 0.0986 Valid Loss: 0.1677
+Epoch 41, Train Loss: 0.0968 Valid Loss: 0.1697
