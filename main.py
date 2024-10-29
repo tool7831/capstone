@@ -76,7 +76,7 @@ if __name__ == '__main__':
     
         
     anomaly_dir = f'anomaly_maps/{save_name}'
-    model = train.train(model, train_loader, valid_loader, criterion, optimizer, scheduler, args.epochs, args.RIAD, args.img_size, device=device, save_name=save_name, x_normal_fixed=x_normal_fixed, x_test_fixed=x_test_fixed)
+    model = train.train(model, train_loader, valid_loader, args, optimizer, scheduler, args.epochs, args.RIAD, args.img_size, device=device, save_name=save_name, x_normal_fixed=x_normal_fixed, x_test_fixed=x_test_fixed)
     model = test.test(model, test_loader, anomaly_dir, args.RIAD, args.img_size, device=device, save_name=save_name)
 
    
