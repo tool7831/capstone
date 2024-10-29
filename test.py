@@ -137,8 +137,7 @@ def test_and_save_anomaly_maps(model, test_loader, RIAD, img_size, device, root_
             score = score.squeeze().cpu().numpy()
             for i in range(score.shape[0]):
                 score[i] = gaussian_filter(score[i], sigma=7)
-            # 재구성 오차 기반 anomaly map 생성
-            # anomaly_maps = F.mse_loss(outputs, images, reduction='none').mean(dim=1, keepdim=True)
+
             scores.extend(score)
             recon_imgs.extend(outputs.cpu().numpy())
             
@@ -153,6 +152,7 @@ def test_and_save_anomaly_maps(model, test_loader, RIAD, img_size, device, root_
 def test(model, test_loader, root_anomaly_map_dir, RIAD, img_size, device, save_name):
     
     scores, test_imgs, recon_imgs, gt_list, gt_mask_list = test_and_save_anomaly_maps(model, test_loader, RIAD, img_size, device, root_anomaly_map_dir)
+    
     scores = np.asarray(scores)
     max_anomaly_score = scores.max()
     min_anomaly_score = scores.min()

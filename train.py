@@ -1,19 +1,29 @@
 import os
 import random
 import torch
+import torch.nn as nn
+from losses.ssim_loss import SSIM_Loss
+from losses.gms_loss import MSGMS_Loss
 from tqdm.auto import tqdm
 from gen_mask import gen_mask
 from torchvision.utils import save_image
 
-def train(model, train_loader, valid_loader, criterion, optimizer, scheduler, num_epochs, RIAD, img_size, device, save_name, x_normal_fixed, x_test_fixed):
+def train(model, train_loader, valid_loader, args, optimizer, scheduler, num_epochs, RIAD, img_size, device, save_name, x_normal_fixed, x_test_fixed):
     # 학습 루프
     best_loss = 100000
     early_stopping = EarlyStopping(patience=10)
-    
+ 
+    ssim = SSIM_Loss()
+    mse = nn.MSELoss(reduction='mean')
+    msgms = MSGMS_Loss()
+
     for epoch in tqdm(range(num_epochs)):
         # train
         model.train()
         train_loss = 0
+        train_l2_loss = 0
+        train_gms_loss = 0
+        train_ssim_loss = 0
         for images, _, _, _, _ in tqdm(train_loader):
             images = images.to(device)
             optimizer.zero_grad()
@@ -24,18 +34,28 @@ def train(model, train_loader, valid_loader, criterion, optimizer, scheduler, nu
                 inputs = [images * (torch.tensor(mask, requires_grad=False).to(device)) for mask in masks]
                 
                 outputs = [model(input) for input in inputs]
-                output = sum(map(lambda x, y: x * (torch.tensor(1 - y, requires_grad=False).to(device)), outputs, masks))
-                loss = criterion(output, images)
+                outputs = sum(map(lambda x, y: x * (torch.tensor(1 - y, requires_grad=False).to(device)), outputs, masks))
             else:
                 outputs = model(images)
-                loss = criterion(outputs, images)
-                
+            
+            l2_loss = mse(images, outputs)
+            gms_loss = msgms(images, outputs)
+            ssim_loss = ssim(images, outputs)
+            loss = args.gamma * l2_loss + args.alpha * gms_loss + args.belta * ssim_loss
+
+            train_loss += loss.item()
+            train_l2_loss += l2_loss.item()
+            train_gms_loss += gms_loss.item()
+            train_ssim_loss += ssim_loss.item()
+
             loss.backward()
             optimizer.step()
-            train_loss += loss.item()
             
         # valid
         model.eval()
+        valid_l2_loss = 0
+        valid_gms_loss = 0
+        valid_ssim_loss = 0
         valid_loss = 0
         with torch.no_grad():
             for images, _, _, _, _ in tqdm(valid_loader):
@@ -47,11 +67,18 @@ def train(model, train_loader, valid_loader, criterion, optimizer, scheduler, nu
                     inputs = [images * (torch.tensor(mask, requires_grad=False).to(device)) for mask in masks]
                     
                     outputs = [model(input) for input in inputs]
-                    output = sum(map(lambda x, y: x * (torch.tensor(1 - y, requires_grad=False).to(device)), outputs, masks))
-                    loss = criterion(output, images)
+                    outputs = sum(map(lambda x, y: x * (torch.tensor(1 - y, requires_grad=False).to(device)), outputs, masks))
                 else:
                     outputs = model(images)
-                    loss = criterion(outputs, images)
+
+                l2_loss = mse(images, outputs)
+                gms_loss = msgms(images, outputs)
+                ssim_loss = ssim(images, outputs)
+                loss = args.gamma * l2_loss + args.alpha * gms_loss + args.belta * ssim_loss
+
+                valid_l2_loss += l2_loss.item()
+                valid_gms_loss += gms_loss.item()
+                valid_ssim_loss += ssim_loss.item()
                 valid_loss += loss.item()
                 
         if epoch % 10 == 9:
@@ -62,10 +89,15 @@ def train(model, train_loader, valid_loader, criterion, optimizer, scheduler, nu
         scheduler.step(valid_loss / len(valid_loader))
         early_stopping(val_loss=valid_loss / len(valid_loader))
         best_loss = save(model, train_loss / len(train_loader), valid_loss / len(valid_loader), best_loss, epoch+1, save_name)
+        
+        
         print(f"Epoch [{epoch+1}/{num_epochs}], Train Loss: {train_loss / len(train_loader):.4f}, Valid Loss {valid_loss / len(valid_loader):.4f}")
+        print(f'Train L2_Loss: {train_l2_loss / len(train_loader):.6f} GMS_Loss: {train_gms_loss / len(train_loader):.6f} SSIM_Loss: {train_ssim_loss / len(train_loader):.6f}')
         if early_stopping.early_stop:
             print("Early stopping triggered")
             break
+
+
     return model
 
 
