@@ -55,9 +55,9 @@ if __name__ == '__main__':
     scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=3, verbose=True)
     
     if args.RIAD:
-        save_name = f'{model.__class__.__name__}_RIAD_{args.loss}_{args.img_size}'
+        save_name = f'{model.__class__.__name__}_RIAD_{args.img_size}'
     else:
-        save_name = f'{model.__class__.__name__}_{args.loss}_{args.img_size}'
+        save_name = f'{model.__class__.__name__}_{args.img_size}'
         
     os.makedirs(f'metrics/{save_name}', exist_ok=True)
     with open(os.path.join(f'metrics/{save_name}', 'model_training_log.txt'), 'w') as f:
