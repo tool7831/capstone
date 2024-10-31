@@ -1,0 +1,5 @@
+torch
+segmentation_models_pytorch
+torchvision
+tiffile
+kornia
