@@ -1,0 +1,1 @@
+{'model_name': 'EfficientNetV2SAutoencoder', 'epochs': 100, 'lr': 0.001, 'batch_size': 16, 'img_size': 224, 'alpha': 1.0, 'belta': 1.0, 'gamma': 1.0, 'RIAD': False, 'seed': 1118}

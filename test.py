@@ -86,7 +86,7 @@ def plot_fig(test_img, recon_imgs, scores, gts, threshold, save_dir):
         fig_img.savefig(os.path.join(save_dir, f'{i}_png'), dpi=100)
         plt.close()
         
-def save_anomaly_map(anomaly_map, image_path, anomaly_root_dir):
+def save_anomaly_map(anomaly_map, image_path, anomaly_root_dir, img_size):
     """
     anomaly_map을 원본 이미지와 동일한 폴더 구조로 anomaly_root_dir에 저장합니다.
     
@@ -96,7 +96,7 @@ def save_anomaly_map(anomaly_map, image_path, anomaly_root_dir):
         anomaly_root_dir (str): anomaly map의 최상위 폴더 경로
     """
     # 이미지의 파일 경로에서 최상위 디렉토리를 제외한 경로 추출
-    relative_path = os.path.relpath(image_path, start='mvtec_anomaly_detection')
+    relative_path = os.path.relpath(image_path, start=f'mvtec_anomaly_detection_{img_size}')
     relative_path = os.path.splitext(relative_path)[0] + '.tiff'
     save_path = os.path.join(anomaly_root_dir, relative_path)
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
@@ -133,6 +133,7 @@ def test_and_save_anomaly_maps(model, test_loader, RIAD, img_size, device, root_
             else:
                 outputs = model(images)
                 score = msgms_score(images, outputs)
+                # score = F.l1_loss(images, outputs, reduction='none').mean(dim=1)
                 
             score = score.squeeze().cpu().numpy()
             for i in range(score.shape[0]):
@@ -145,13 +146,13 @@ def test_and_save_anomaly_maps(model, test_loader, RIAD, img_size, device, root_
             for i in range(images.size(0)):
                 image_path = image_paths[i]
                 anomaly_map = score[i]
-                save_anomaly_map(anomaly_map, image_path, root_anomaly_map_dir)
+                save_anomaly_map(anomaly_map, image_path, root_anomaly_map_dir, img_size=args.img_size)
                 
     return scores, test_imgs, recon_imgs, gt_list, gt_mask_list
 
 def test(model, test_loader, root_anomaly_map_dir, RIAD, img_size, device, save_name):
     
-    scores, test_imgs, recon_imgs, gt_list, gt_mask_list = test_and_save_anomaly_maps(model, test_loader, RIAD, img_size, device, root_anomaly_map_dir)
+    scores, test_imgs, recon_imgs, gt_list, gt_mask_list = test_and_save_anomaly_maps(model, test_loader, RIAD, img_size, device=device, root_anomaly_map_dir=root_anomaly_map_dir)
     
     scores = np.asarray(scores)
     max_anomaly_score = scores.max()
@@ -169,7 +170,7 @@ def test(model, test_loader, root_anomaly_map_dir, RIAD, img_size, device, save_
 
     # calculate per-pixel level ROCAUC
     gt_mask = np.asarray(gt_mask_list)
-    gt_mask = (gt_mask > 0.6).astype(int) # 확실히 0,1 만 갖게 만듦
+    gt_mask = (gt_mask > 0.5).astype(int) # 확실히 0,1 만 갖게 만듦
     precision, recall, thresholds = precision_recall_curve(gt_mask.flatten(), scores.flatten())
     a = 2 * precision * recall
     b = precision + recall
@@ -202,34 +203,19 @@ if __name__ == '__main__':
     parser.add_argument('--img_size', type=int, default=224)
     parser.add_argument('--RIAD', type=bool, default=False)
     parser.add_argument('--seed', type=int, default=3338)
-    parser.add_argument('--loss', type=str, choices=["MSE", "SSIM"])
-    parser.add_argument('--epochs', type=int, default=100)
 
     args = parser.parse_args()
         
-    transform_x = transforms.Compose([
-        transforms.Resize(args.img_size, Image.LANCZOS),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-    ])
-    transform_mask = transforms.Compose([
-        transforms.Resize(args.img_size, Image.NEAREST),
-        transforms.ToTensor()
-    ])
     test_dataset = MvtecADDataset(root_dir=f"mvtec_anomaly_detection_{args.img_size}", split="test", img_size=args.img_size)
     test_loader = DataLoader(test_dataset, batch_size=args.batch_size, shuffle=False)
-        
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = return_model(args.model_name).to(device)
     model.load_state_dict(torch.load(args.state_dict_path, weights_only=True))
 
-    if args.RIAD:
-        save_name = f'{model.__class__.__name__}_RIAD_{args.loss}_{args.epochs}_{args.img_size}'
-    else:
-        save_name = f'{model.__class__.__name__}_{args.loss}_{args.epochs}_{args.img_size}'
-        
+    save_name = os.path.basename(args.state_dict_path)
+    print('Save name: ', save_name)
     os.makedirs(f'metrics/{save_name}', exist_ok=True)
     
     anomaly_dir = f'anomaly_maps/{save_name}'
-    model = test(model, test_loader, anomaly_dir, args.RIAD, args.img_size, device=device, save_name=save_name)
+    model = test(model, test_loader, root_anomaly_map_dir=anomaly_dir, RIAD=args.RIAD, img_size=args.img_size, device=device, save_name=save_name)
     

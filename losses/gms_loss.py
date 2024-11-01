@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from functools import partial
 
+import sys
 import kornia
 
 use_cuda = torch.cuda.is_available()
@@ -24,7 +25,7 @@ class Prewitt(nn.Module):
         x = self.filter(img)
         x = torch.mul(x, x)
         x = torch.sum(x, dim=1, keepdim=True)
-        x = torch.sqrt(x)
+        x = torch.sqrt(x+sys.float_info.epsilon)
         return x
 
 

@@ -1,0 +1,1 @@
+python3 test.py --model_name EfficientNetV2SAutoencoder --state_dict_path model/EfficientNetV2SAutoencoder_224

@@ -8,7 +8,7 @@ from tqdm.auto import tqdm
 from gen_mask import gen_mask
 from torchvision.utils import save_image
 
-def train(model, train_loader, valid_loader, args, optimizer, scheduler, num_epochs, RIAD, img_size, device, save_name, x_normal_fixed, x_test_fixed):
+def train(model, train_loader, valid_loader, args, optimizer, scheduler, device, save_name, x_normal_fixed, x_test_fixed):
     # 학습 루프
     best_loss = 100000
     early_stopping = EarlyStopping(patience=10)
@@ -17,7 +17,7 @@ def train(model, train_loader, valid_loader, args, optimizer, scheduler, num_epo
     mse = nn.MSELoss(reduction='mean')
     msgms = MSGMS_Loss()
 
-    for epoch in tqdm(range(num_epochs)):
+    for epoch in tqdm(range(args.epochs)):
         # train
         model.train()
         train_loss = 0
@@ -25,11 +25,19 @@ def train(model, train_loader, valid_loader, args, optimizer, scheduler, num_epo
         train_gms_loss = 0
         train_ssim_loss = 0
         for images, _, _, _, _ in tqdm(train_loader):
+            if torch.isnan(images).any():
+                print("NaN detected in input images")
+                continue  # NaN이 포함된 이미지는 건너뛰기
+            
+            if torch.isinf(images).any():
+                print("Inf detected in input images")
+                continue  # Inf가 포함된 이미지는 건너뛰기
+            
             images = images.to(device)
             optimizer.zero_grad()
-            if RIAD:
+            if args.RIAD:
                 k_value = random.sample([2,4,8,16],1)
-                mask_generator = gen_mask(k_value, 3, img_size)
+                mask_generator = gen_mask(k_value, 3, args.img_size)
                 masks = next(mask_generator)
                 inputs = [images * (torch.tensor(mask, requires_grad=False).to(device)) for mask in masks]
                 
@@ -42,7 +50,7 @@ def train(model, train_loader, valid_loader, args, optimizer, scheduler, num_epo
             gms_loss = msgms(images, outputs)
             ssim_loss = ssim(images, outputs)
             loss = args.gamma * l2_loss + args.alpha * gms_loss + args.belta * ssim_loss
-
+            
             train_loss += loss.item()
             train_l2_loss += l2_loss.item()
             train_gms_loss += gms_loss.item()
@@ -60,9 +68,9 @@ def train(model, train_loader, valid_loader, args, optimizer, scheduler, num_epo
         with torch.no_grad():
             for images, _, _, _, _ in tqdm(valid_loader):
                 images = images.to(device)
-                if RIAD:
+                if args.RIAD:
                     k_value = random.sample([2,4,8,16],1)
-                    mask_generator = gen_mask(k_value, 3, img_size)
+                    mask_generator = gen_mask(k_value, 3, args.img_size)
                     masks = next(mask_generator)
                     inputs = [images * (torch.tensor(mask, requires_grad=False).to(device)) for mask in masks]
                     
@@ -91,7 +99,7 @@ def train(model, train_loader, valid_loader, args, optimizer, scheduler, num_epo
         best_loss = save(model, train_loss / len(train_loader), valid_loss / len(valid_loader), best_loss, epoch+1, save_name)
         
         
-        print(f"Epoch [{epoch+1}/{num_epochs}], Train Loss: {train_loss / len(train_loader):.4f}, Valid Loss {valid_loss / len(valid_loader):.4f}")
+        print(f"Epoch [{epoch+1}/{args.epochs}], Train Loss: {train_loss / len(train_loader):.4f}, Valid Loss {valid_loss / len(valid_loader):.4f}")
         print(f'Train L2_Loss: {train_l2_loss / len(train_loader):.6f} GMS_Loss: {train_gms_loss / len(train_loader):.6f} SSIM_Loss: {train_ssim_loss / len(train_loader):.6f}')
         if early_stopping.early_stop:
             print("Early stopping triggered")
