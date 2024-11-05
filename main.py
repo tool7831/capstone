@@ -18,13 +18,15 @@ if __name__ == '__main__':
     
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('--model_name', type=str )
+    parser.add_argument('--prefix', type=str, default=None)
     parser.add_argument('--epochs', type=int, default=100)
     parser.add_argument('--lr', type=float, default=1e-3)
     parser.add_argument('--batch_size', type=int, default=16)
     parser.add_argument('--img_size', type=int, default=224)
     parser.add_argument('--alpha', type=float, default=1.0)
-    parser.add_argument('--belta', type=float, default=1.0)
+    parser.add_argument('--beta', type=float, default=1.0)
     parser.add_argument('--gamma', type=float, default=1.0)
+    parser.add_argument('--delta', type=float, default=0.0)
     parser.add_argument('--RIAD', type=bool, default=False)
     parser.add_argument('--seed', type=int, default=None, help='manual seed')
     args = parser.parse_args()
@@ -55,9 +57,15 @@ if __name__ == '__main__':
     scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=3, verbose=True)
     
     if args.RIAD:
-        save_name = f'{model.__class__.__name__}_RIAD_{args.img_size}'
+        if args.prefix is None:
+            save_name = f'{model.__class__.__name__}_RIAD_{args.img_size}'
+        else:
+            save_name = f'{model.__class__.__name__}_RIAD_{args.img_size}_{args.prefix}'
     else:
-        save_name = f'{model.__class__.__name__}_{args.img_size}'
+        if args.prefix is None:
+            save_name = f'{model.__class__.__name__}_{args.img_size}'
+        else:
+            save_name = f'{model.__class__.__name__}_{args.img_size}_{args.prefix}'
         
     os.makedirs(f'metrics/{save_name}', exist_ok=True)
     with open(os.path.join(f'metrics/{save_name}', 'model_training_log.txt'), 'w') as f:

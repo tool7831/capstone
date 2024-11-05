@@ -14,6 +14,7 @@ from tqdm import tqdm
 import generic_util as util
 from pro_curve_util import compute_pro
 from roc_curve_util import compute_classification_roc
+from classification_metrics_util import compute_image_level_metrics, compute_pixel_level_metrics
 
 
 def parse_user_arguments():
@@ -166,6 +167,15 @@ def calculate_au_pro_au_roc(gt_filenames,
     au_pro /= integration_limit
     print(f"AU-PRO (FPR limit: {integration_limit}): {au_pro}")
 
+    pixel_level_metrics = compute_pixel_level_metrics(
+        anomaly_maps=predictions,
+        ground_truth_maps=ground_truth)
+    print('Threshold: {:.4f}'.format(pixel_level_metrics['threshold']))
+    print('Pixel-level Accuracy: {:.4f}'.format(pixel_level_metrics['accuracy']))
+    print('Pixel-level Precision: {:.4f}'.format(pixel_level_metrics['precision']))
+    print('Pixel-level Recall: {:.4f}'.format(pixel_level_metrics['recall']))
+    print('Pixel-level F1 Score: {:.4f}'.format(pixel_level_metrics['f1']))
+
     # Derive binary labels for each input image:
     # (0 = anomaly free, 1 = anomalous).
     binary_labels = [int(np.any(x > 0)) for x in ground_truth]
@@ -181,8 +191,20 @@ def calculate_au_pro_au_roc(gt_filenames,
     au_roc = util.trapezoid(roc_curve[0], roc_curve[1])
     print(f"Image-level classification AU-ROC: {au_roc}")
 
+    image_level_metrics = compute_image_level_metrics(
+        anomaly_maps=predictions,
+        scoring_function=np.max,
+        ground_truth_labels=binary_labels,
+        fprs=roc_curve[0], tprs=roc_curve[1])
+
+    print('Threshold: {:.4f}'.format(image_level_metrics['threshold']))
+    print('Image-level Accuracy: {:.4f}'.format(image_level_metrics['accuracy']))
+    print('Image-level Precision: {:.4f}'.format(image_level_metrics['precision']))
+    print('Image-level Recall: {:.4f}'.format(image_level_metrics['recall']))
+    print('Image-level F1 Score: {:.4f}'.format(image_level_metrics['f1']))
+    
     # Return the evaluation metrics.
-    return au_pro, au_roc, pro_curve, roc_curve
+    return au_pro, au_roc, pro_curve, roc_curve, pixel_level_metrics, image_level_metrics
 
 
 def main():
@@ -198,6 +220,16 @@ def main():
     # Keep track of the mean performance measures.
     au_pros = []
     au_rocs = []
+    
+    p_acs = []
+    p_prs = []
+    p_res = []
+    p_f1s = []
+    i_acs = []
+    i_prs = []
+    i_res = []
+    i_f1s = []
+    
 
     # Evaluate each dataset object separately.
     for obj in args.evaluated_objects:
@@ -213,7 +245,7 @@ def main():
                 anomaly_maps_dir=args.anomaly_maps_dir)
 
         # Calculate the PRO and ROC curves.
-        au_pro, au_roc, pro_curve, roc_curve = \
+        au_pro, au_roc, pro_curve, roc_curve, pixel_level_metrics, image_level_metrics = \
             calculate_au_pro_au_roc(
                 gt_filenames,
                 prediction_filenames,
@@ -221,6 +253,15 @@ def main():
 
         evaluation_dict[obj]['au_pro'] = au_pro
         evaluation_dict[obj]['classification_au_roc'] = au_roc
+        evaluation_dict[obj]['pixel_level_accuracy'] = pixel_level_metrics['accuracy']
+        evaluation_dict[obj]['pixel_level_precision'] = pixel_level_metrics['precision']
+        evaluation_dict[obj]['pixel_level_recall'] = pixel_level_metrics['recall']
+        evaluation_dict[obj]['pixel_level_f1_score'] = pixel_level_metrics['f1']
+        evaluation_dict[obj]['image_level_accuracy'] = image_level_metrics['accuracy']
+        evaluation_dict[obj]['image_level_precision'] = image_level_metrics['precision']
+        evaluation_dict[obj]['image_level_recall'] = image_level_metrics['recall']
+        evaluation_dict[obj]['image_level_f1_score'] = image_level_metrics['f1']
+        
 
         evaluation_dict[obj]['classification_roc_curve_fpr'] = roc_curve[0]
         evaluation_dict[obj]['classification_roc_curve_tpr'] = roc_curve[1]
@@ -228,12 +269,29 @@ def main():
         # Keep track of the mean performance measures.
         au_pros.append(au_pro)
         au_rocs.append(au_roc)
+        p_acs.append(pixel_level_metrics['accuracy'])
+        p_prs.append(pixel_level_metrics['precision'])
+        p_res.append(pixel_level_metrics['recall'])
+        p_f1s.append(pixel_level_metrics['f1'])
+        i_acs.append(image_level_metrics['accuracy'])
+        i_prs.append(image_level_metrics['precision'])
+        i_res.append(image_level_metrics['recall'])
+        i_f1s.append(image_level_metrics['f1'])
 
         print('\n')
 
     # Compute the mean of the performance measures.
     evaluation_dict['mean_au_pro'] = np.mean(au_pros).item()
     evaluation_dict['mean_classification_au_roc'] = np.mean(au_rocs).item()
+    
+    evaluation_dict['mean_pixel_level_accuracy'] = np.mean(p_acs).item()
+    evaluation_dict['mean_pixel_level_precision'] = np.mean(p_prs).item()
+    evaluation_dict['mean_pixel_level_recall'] = np.mean(p_res).item()
+    evaluation_dict['mean_pixel_level_f1_score'] = np.mean(p_f1s).item()
+    evaluation_dict['mean_image_level_accuracy'] = np.mean(i_acs).item()
+    evaluation_dict['mean_image_level_precision'] = np.mean(i_prs).item()
+    evaluation_dict['mean_image_level_recall'] = np.mean(i_res).item()
+    evaluation_dict['mean_image_level_f1_score'] = np.mean(i_f1s).item()
 
     # If required, write evaluation metrics to drive.
     if args.output_dir is not None:

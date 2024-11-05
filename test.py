@@ -133,7 +133,7 @@ def test_and_save_anomaly_maps(model, test_loader, RIAD, img_size, device, root_
             else:
                 outputs = model(images)
                 score = msgms_score(images, outputs)
-                # score = F.l1_loss(images, outputs, reduction='none').mean(dim=1)
+                # score = F.mse_loss(images, outputs, reduction='none').mean(dim=1)
                 
             score = score.squeeze().cpu().numpy()
             for i in range(score.shape[0]):
@@ -146,7 +146,7 @@ def test_and_save_anomaly_maps(model, test_loader, RIAD, img_size, device, root_
             for i in range(images.size(0)):
                 image_path = image_paths[i]
                 anomaly_map = score[i]
-                save_anomaly_map(anomaly_map, image_path, root_anomaly_map_dir, img_size=args.img_size)
+                save_anomaly_map(anomaly_map, image_path, root_anomaly_map_dir, img_size=img_size)
                 
     return scores, test_imgs, recon_imgs, gt_list, gt_mask_list
 
@@ -155,9 +155,9 @@ def test(model, test_loader, root_anomaly_map_dir, RIAD, img_size, device, save_
     scores, test_imgs, recon_imgs, gt_list, gt_mask_list = test_and_save_anomaly_maps(model, test_loader, RIAD, img_size, device=device, root_anomaly_map_dir=root_anomaly_map_dir)
     
     scores = np.asarray(scores)
-    max_anomaly_score = scores.max()
-    min_anomaly_score = scores.min()
-    scores = (scores - min_anomaly_score) / (max_anomaly_score - min_anomaly_score)
+    # max_anomaly_score = scores.max()
+    # min_anomaly_score = scores.min()
+    # scores = (scores - min_anomaly_score) / (max_anomaly_score - min_anomaly_score)
 
     # calculate image-level ROC AUC score
     img_scores = scores.reshape(scores.shape[0], -1).max(axis=1)

@@ -77,4 +77,4 @@ class MSGMS_Score(nn.Module):
             score = self.GMS_Score(Ii, Ir)
             total_scores += F.interpolate(score, size=img_size, mode='bilinear', align_corners=False)
 
-        return (1 - total_scores) / 4
+        return 1 - (total_scores / 4)

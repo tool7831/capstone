@@ -45,7 +45,9 @@ def extract_table_rows(metrics_folder, metric):
           extracted metrics for each evaluated object as well as the mean
           performance.
     """
-    assert metric in ['au_pro', 'classification_au_roc']
+    assert metric in ['au_pro', 'classification_au_roc', 'pixel_level_accuracy', 'image_level_accuracy',
+                      'pixel_level_precision', 'image_level_precision', 'pixel_level_recall', 'image_level_recall',
+                      'pixel_level_f1_score', 'image_level_f1_score']
 
     # Iterate each experiment.
     exp_ids = os.listdir(metrics_folder)
@@ -95,7 +97,19 @@ def main():
     # Create the table rows. One row for each experiment.
     rows_pro = extract_table_rows(args.metrics_folder, 'au_pro')
     rows_roc = extract_table_rows(args.metrics_folder, 'classification_au_roc')
-
+    
+    rows_pac = extract_table_rows(args.metrics_folder, 'pixel_level_accuracy')
+    rows_iac = extract_table_rows(args.metrics_folder, 'image_level_accuracy')
+    
+    rows_ppr = extract_table_rows(args.metrics_folder, 'pixel_level_precision')
+    rows_ipr = extract_table_rows(args.metrics_folder, 'image_level_precision')
+    
+    rows_pre = extract_table_rows(args.metrics_folder, 'pixel_level_recall')
+    rows_ire = extract_table_rows(args.metrics_folder, 'image_level_recall')
+    
+    rows_pf1 = extract_table_rows(args.metrics_folder, 'pixel_level_f1_score')
+    rows_if1 = extract_table_rows(args.metrics_folder, 'image_level_f1_score')
+    
     # Print localization result table.
     print("\nAU PRO (localization)")
     print(
@@ -109,7 +123,56 @@ def main():
         tabulate(
             rows_roc, headers=['Experiment'] + OBJECT_NAMES + ['Mean'],
             tablefmt='fancy_grid'))
+    
+    # Print classification result table.
+    print("\nAccuracy(pixel)")
+    print(
+        tabulate(
+            rows_pac, headers=['Experiment'] + OBJECT_NAMES + ['Mean'],
+            tablefmt='fancy_grid'))
+    
+    print("\nAccuracy (image)")
+    print(
+        tabulate(
+            rows_iac, headers=['Experiment'] + OBJECT_NAMES + ['Mean'],
+            tablefmt='fancy_grid'))
 
+    print("\nPrecision (pixel)")
+    print(
+        tabulate(
+            rows_ppr, headers=['Experiment'] + OBJECT_NAMES + ['Mean'],
+            tablefmt='fancy_grid'))
+    
+    print("\nPrecision (image)")
+    print(
+        tabulate(
+            rows_ipr, headers=['Experiment'] + OBJECT_NAMES + ['Mean'],
+            tablefmt='fancy_grid'))
+    
+    print("\nRecall (pixel)")
+    
+    print(
+        tabulate(
+            rows_pre, headers=['Experiment'] + OBJECT_NAMES + ['Mean'],
+            tablefmt='fancy_grid'))
+    
+    print("\nRecall (image)")
+    print(
+        tabulate(
+            rows_ire, headers=['Experiment'] + OBJECT_NAMES + ['Mean'],
+            tablefmt='fancy_grid'))
+    
+    print("\nF1 score (pixel)")
+    print(
+        tabulate(
+            rows_pf1, headers=['Experiment'] + OBJECT_NAMES + ['Mean'],
+            tablefmt='fancy_grid'))
+    
+    print("\nF1 score (image)")
+    print(
+        tabulate(
+            rows_if1, headers=['Experiment'] + OBJECT_NAMES + ['Mean'],
+            tablefmt='fancy_grid'))
 
 if __name__ == "__main__":
     main()

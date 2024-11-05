@@ -1,1 +1,0 @@
-{'model_name': 'EfficientNetB0Unet', 'epochs': 100, 'lr': 0.001, 'batch_size': 16, 'img_size': 224, 'loss': 'SSIM', 'RIAD': True, 'seed': 9457}
