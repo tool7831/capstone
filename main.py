@@ -4,7 +4,6 @@ import torch.nn as nn
 import argparse
 import models, train, test
 import random
-from losses.ssim_loss import SSIM_Loss
 from tqdm.auto import tqdm
 from torch.utils.data import DataLoader, Subset
 from torch.optim.lr_scheduler import ReduceLROnPlateau
