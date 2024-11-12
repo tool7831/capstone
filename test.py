@@ -4,7 +4,7 @@ import torch.nn.functional as F
 import tiffile as tiff
 import matplotlib
 from tqdm.auto import tqdm
-from gen_mask import gen_mask
+from utils.gen_mask import gen_mask
 from losses.gms_loss import MSGMS_Score
 from skimage import morphology
 from skimage.segmentation import mark_boundaries
@@ -15,10 +15,10 @@ from sklearn.metrics import precision_recall_curve
 import argparse
 import matplotlib.pyplot as plt
 import numpy as np
-import models
+import models as models
 from torchvision import transforms
 from torch.utils.data import DataLoader
-from dataset import MvtecADDataset
+from datasets.dataset import MvtecADDataset
 from PIL import Image
 
 def denormalization(x):

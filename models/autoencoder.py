@@ -8,6 +8,7 @@ from torchvision.models import EfficientNet_V2_S_Weights,EfficientNet_V2_M_Weigh
 from torchvision.models import swin_b, Swin_B_Weights
 import timm
 
+
 class Decoder(nn.Module):
     def __init__(self, channels, kernel_size=4, stride=2, padding=1):
         super(Decoder, self).__init__()
@@ -26,6 +27,7 @@ class Decoder(nn.Module):
     def forward(self, x):
         return self.decoder(x)
 
+
 class SwinTAE(nn.Module):
     def __init__(self):
         super(SwinTAE, self).__init__()
@@ -39,18 +41,7 @@ class SwinTAE(nn.Module):
         x = self.decoder(x)
         return x
 
-# EfficientNet 기반 Autoencoder 정의
-class EfficientNetB0Autoencoder(nn.Module):
-    def __init__(self):
-        super(EfficientNetB0Autoencoder, self).__init__()
-        
-        self.encoder = efficientnet_b0(EfficientNet_B0_Weights.DEFAULT)
-        self.decoder = Decoder([1280, 512, 256, 128, 64, 3])
 
-    def forward(self, x):
-        x = self.encoder.features(x)
-        x = self.decoder(x)
-        return x
 
 class EfficientNetUNet(nn.Module):
     def __init__(self, num_classes=1):
