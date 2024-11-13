@@ -1,0 +1,312 @@
+{
+    "bottle": {
+        "au_pro": 0.30103846325515027,
+        "classification_au_roc": 0.5,
+        "pixel_level_accuracy": 0.6968910399250061,
+        "pixel_level_precision": 0.14063178153614345,
+        "pixel_level_recall": 0.8310173542554297,
+        "pixel_level_f1_score": 0.24055483962569502,
+        "image_level_accuracy": 0.24096385542168675,
+        "image_level_precision": 0.0,
+        "image_level_recall": 0.0,
+        "image_level_f1_score": 0.0,
+        "classification_roc_curve_fpr": [
+            0.0,
+            1.0
+        ],
+        "classification_roc_curve_tpr": [
+            0.0,
+            1.0
+        ]
+    },
+    "cable": {
+        "au_pro": 0.21091346294317523,
+        "classification_au_roc": 0.5,
+        "pixel_level_accuracy": 0.9666860650510204,
+        "pixel_level_precision": 0.16459494213459067,
+        "pixel_level_recall": 0.03905614320585842,
+        "pixel_level_f1_score": 0.06313193588162762,
+        "image_level_accuracy": 0.38666666666666666,
+        "image_level_precision": 0.0,
+        "image_level_recall": 0.0,
+        "image_level_f1_score": 0.0,
+        "classification_roc_curve_fpr": [
+            0.0,
+            1.0
+        ],
+        "classification_roc_curve_tpr": [
+            0.0,
+            1.0
+        ]
+    },
+    "capsule": {
+        "au_pro": 0.48095976323493783,
+        "classification_au_roc": 0.5,
+        "pixel_level_accuracy": 0.8482838891948825,
+        "pixel_level_precision": 0.03882726915720228,
+        "pixel_level_recall": 0.6549990936207379,
+        "pixel_level_f1_score": 0.07330890686802977,
+        "image_level_accuracy": 0.17424242424242425,
+        "image_level_precision": 0.0,
+        "image_level_recall": 0.0,
+        "image_level_f1_score": 0.0,
+        "classification_roc_curve_fpr": [
+            0.0,
+            1.0
+        ],
+        "classification_roc_curve_tpr": [
+            0.0,
+            1.0
+        ]
+    },
+    "carpet": {
+        "au_pro": 0.16983390400892187,
+        "classification_au_roc": 0.5,
+        "pixel_level_accuracy": 0.8589333068964765,
+        "pixel_level_precision": 0.02514830604415865,
+        "pixel_level_recall": 0.20650418596744718,
+        "pixel_level_f1_score": 0.044836387668551664,
+        "image_level_accuracy": 0.23931623931623933,
+        "image_level_precision": 0.0,
+        "image_level_recall": 0.0,
+        "image_level_f1_score": 0.0,
+        "classification_roc_curve_fpr": [
+            0.0,
+            1.0
+        ],
+        "classification_roc_curve_tpr": [
+            0.0,
+            1.0
+        ]
+    },
+    "grid": {
+        "au_pro": 0.23372256635498564,
+        "classification_au_roc": 0.5,
+        "pixel_level_accuracy": 0.956866701007326,
+        "pixel_level_precision": 0.019961391269008026,
+        "pixel_level_recall": 0.10886188171844409,
+        "pixel_level_f1_score": 0.033736677618398915,
+        "image_level_accuracy": 0.2692307692307692,
+        "image_level_precision": 0.0,
+        "image_level_recall": 0.0,
+        "image_level_f1_score": 0.0,
+        "classification_roc_curve_fpr": [
+            0.0,
+            1.0
+        ],
+        "classification_roc_curve_tpr": [
+            0.0,
+            1.0
+        ]
+    },
+    "hazelnut": {
+        "au_pro": 4.686423375044598e-05,
+        "classification_au_roc": 0.5,
+        "pixel_level_accuracy": 0.02140030728200371,
+        "pixel_level_precision": 0.021355101307180067,
+        "pixel_level_recall": 0.9995929029412762,
+        "pixel_level_f1_score": 0.04181683615506503,
+        "image_level_accuracy": 0.36363636363636365,
+        "image_level_precision": 0.0,
+        "image_level_recall": 0.0,
+        "image_level_f1_score": 0.0,
+        "classification_roc_curve_fpr": [
+            0.0,
+            1.0
+        ],
+        "classification_roc_curve_tpr": [
+            0.0,
+            1.0
+        ]
+    },
+    "leather": {
+        "au_pro": 0.06680551087461253,
+        "classification_au_roc": 0.5,
+        "pixel_level_accuracy": 0.008718986586570112,
+        "pixel_level_precision": 0.006486227177589888,
+        "pixel_level_recall": 0.9982150383023031,
+        "pixel_level_f1_score": 0.012888705793403633,
+        "image_level_accuracy": 0.25806451612903225,
+        "image_level_precision": 0.0,
+        "image_level_recall": 0.0,
+        "image_level_f1_score": 0.0,
+        "classification_roc_curve_fpr": [
+            0.0,
+            1.0
+        ],
+        "classification_roc_curve_tpr": [
+            0.0,
+            1.0
+        ]
+    },
+    "metal_nut": {
+        "au_pro": 0.017018794541400355,
+        "classification_au_roc": 0.5,
+        "pixel_level_accuracy": 0.11727137866015971,
+        "pixel_level_precision": 0.11719870079449814,
+        "pixel_level_recall": 0.9998890982057569,
+        "pixel_level_f1_score": 0.20980571688845437,
+        "image_level_accuracy": 0.19130434782608696,
+        "image_level_precision": 0.0,
+        "image_level_recall": 0.0,
+        "image_level_f1_score": 0.0,
+        "classification_roc_curve_fpr": [
+            0.0,
+            1.0
+        ],
+        "classification_roc_curve_tpr": [
+            0.0,
+            1.0
+        ]
+    },
+    "pill": {
+        "au_pro": 0.0,
+        "classification_au_roc": 0.5,
+        "pixel_level_accuracy": 0.12057605134119516,
+        "pixel_level_precision": 0.02720016948908327,
+        "pixel_level_recall": 0.7247037245046671,
+        "pixel_level_f1_score": 0.05243240337856449,
+        "image_level_accuracy": 0.15568862275449102,
+        "image_level_precision": 0.0,
+        "image_level_recall": 0.0,
+        "image_level_f1_score": 0.0,
+        "classification_roc_curve_fpr": [
+            0.0,
+            1.0
+        ],
+        "classification_roc_curve_tpr": [
+            0.0,
+            1.0
+        ]
+    },
+    "screw": {
+        "au_pro": 0.5498634749637031,
+        "classification_au_roc": 0.5,
+        "pixel_level_accuracy": 0.8518095055404975,
+        "pixel_level_precision": 0.009728507166652975,
+        "pixel_level_recall": 0.5796413765546177,
+        "pixel_level_f1_score": 0.019135844710270453,
+        "image_level_accuracy": 0.25625,
+        "image_level_precision": 0.0,
+        "image_level_recall": 0.0,
+        "image_level_f1_score": 0.0,
+        "classification_roc_curve_fpr": [
+            0.0,
+            1.0
+        ],
+        "classification_roc_curve_tpr": [
+            0.0,
+            1.0
+        ]
+    },
+    "tile": {
+        "au_pro": 0.22338842396035125,
+        "classification_au_roc": 0.5,
+        "pixel_level_accuracy": 0.8195352359693877,
+        "pixel_level_precision": 0.10904414895676073,
+        "pixel_level_recall": 0.218228212161341,
+        "pixel_level_f1_score": 0.14542327737172697,
+        "image_level_accuracy": 0.28205128205128205,
+        "image_level_precision": 0.0,
+        "image_level_recall": 0.0,
+        "image_level_f1_score": 0.0,
+        "classification_roc_curve_fpr": [
+            0.0,
+            1.0
+        ],
+        "classification_roc_curve_tpr": [
+            0.0,
+            1.0
+        ]
+    },
+    "toothbrush": {
+        "au_pro": 9.837053502541252e-05,
+        "classification_au_roc": 0.5,
+        "pixel_level_accuracy": 0.01596617999878523,
+        "pixel_level_precision": 0.015352240207741692,
+        "pixel_level_recall": 0.9999690728026226,
+        "pixel_level_f1_score": 0.0302402110726142,
+        "image_level_accuracy": 0.2857142857142857,
+        "image_level_precision": 0.0,
+        "image_level_recall": 0.0,
+        "image_level_f1_score": 0.0,
+        "classification_roc_curve_fpr": [
+            0.0,
+            1.0
+        ],
+        "classification_roc_curve_tpr": [
+            0.0,
+            1.0
+        ]
+    },
+    "transistor": {
+        "au_pro": 0.193008830365824,
+        "classification_au_roc": 0.5,
+        "pixel_level_accuracy": 0.45552196269132655,
+        "pixel_level_precision": 0.05914027013205788,
+        "pixel_level_recall": 0.694734303935345,
+        "pixel_level_f1_score": 0.10900161861957157,
+        "image_level_accuracy": 0.6,
+        "image_level_precision": 0.0,
+        "image_level_recall": 0.0,
+        "image_level_f1_score": 0.0,
+        "classification_roc_curve_fpr": [
+            0.0,
+            1.0
+        ],
+        "classification_roc_curve_tpr": [
+            0.0,
+            1.0
+        ]
+    },
+    "wood": {
+        "au_pro": 0.19648970531968799,
+        "classification_au_roc": 0.5,
+        "pixel_level_accuracy": 0.855858012706665,
+        "pixel_level_precision": 0.0677835770761201,
+        "pixel_level_recall": 0.21408333006907176,
+        "pixel_level_f1_score": 0.10296585754903453,
+        "image_level_accuracy": 0.24050632911392406,
+        "image_level_precision": 0.0,
+        "image_level_recall": 0.0,
+        "image_level_f1_score": 0.0,
+        "classification_roc_curve_fpr": [
+            0.0,
+            1.0
+        ],
+        "classification_roc_curve_tpr": [
+            0.0,
+            1.0
+        ]
+    },
+    "zipper": {
+        "au_pro": 0.26211996229807544,
+        "classification_au_roc": 0.5,
+        "pixel_level_accuracy": 0.9791692183909988,
+        "pixel_level_precision": 0.025547445255474453,
+        "pixel_level_recall": 0.0001785873738726672,
+        "pixel_level_f1_score": 0.000354695278752486,
+        "image_level_accuracy": 0.2119205298013245,
+        "image_level_precision": 0.0,
+        "image_level_recall": 0.0,
+        "image_level_f1_score": 0.0,
+        "classification_roc_curve_fpr": [
+            0.0,
+            1.0
+        ],
+        "classification_roc_curve_tpr": [
+            0.0,
+            1.0
+        ]
+    },
+    "mean_au_pro": 0.19368720645930673,
+    "mean_classification_au_roc": 0.5,
+    "mean_pixel_level_accuracy": 0.5715658560828201,
+    "mean_pixel_level_precision": 0.056533338513617484,
+    "mean_pixel_level_recall": 0.551311620374586,
+    "mean_pixel_level_f1_score": 0.07864226096531739,
+    "mean_image_level_accuracy": 0.27703708212697176,
+    "mean_image_level_precision": 0.0,
+    "mean_image_level_recall": 0.0,
+    "mean_image_level_f1_score": 0.0
+}
