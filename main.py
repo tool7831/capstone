@@ -2,15 +2,16 @@ import os
 import torch
 import torch.nn as nn
 import argparse
-import models, train, test
 import random
+import train, test
+from models import autoencoder
 from tqdm.auto import tqdm
 from torch.utils.data import DataLoader, Subset
 from torch.optim.lr_scheduler import ReduceLROnPlateau
-from dataset import MvtecADDataset
+from datasets.dataset import MvtecADDataset
     
 def return_model(model_name:str):
-    cls = getattr(models, model_name)  
+    cls = getattr(autoencoder, model_name)  
     return cls()
     
 if __name__ == '__main__': 

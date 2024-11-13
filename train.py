@@ -5,7 +5,7 @@ import torch.nn as nn
 from losses.ssim_loss import SSIM_Loss
 from losses.gms_loss import MSGMS_Loss
 from tqdm.auto import tqdm
-from gen_mask import gen_mask
+from utils.gen_mask import gen_mask
 from torchvision.utils import save_image
 
 def train(model, train_loader, valid_loader, args, optimizer, scheduler, device, save_name, x_normal_fixed, x_test_fixed):
