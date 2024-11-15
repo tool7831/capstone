@@ -1,0 +1,1 @@
+{'model_name': 'SwinTAE', 'prefix': None, 'epochs': 100, 'lr': 0.001, 'batch_size': 16, 'img_size': 224, 'alpha': 1.0, 'beta': 1.0, 'gamma': 1.0, 'delta': 0.0, 'RIAD': False, 'seed': 8831}
