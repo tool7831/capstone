@@ -123,7 +123,9 @@ def save(model, train_loss, valid_loss, best_loss, epoch, save_name):
         f.write(f'Epoch {epoch}, Train Loss: {train_loss:.4f} Valid Loss: {valid_loss:.4f}\n' ,)
         
     if valid_loss < best_loss:
-        torch.save(model.state_dict(), f'model/{save_name}')
+        if not os.path.exists(f'save/{save_name}'):
+            os.makedirs(f'save/{save_name}')
+        torch.save(model.state_dict(), f'save/{save_name}')
         best_loss = valid_loss
         
     return best_loss

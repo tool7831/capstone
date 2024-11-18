@@ -1,3 +1,4 @@
+import timm
 import torch
 import torch.nn as nn
 import segmentation_models_pytorch as smp
@@ -6,11 +7,12 @@ from torchvision.models import EfficientNet_B0_Weights, EfficientNet_B1_Weights,
 from torchvision.models import efficientnet_v2_s, efficientnet_v2_m, efficientnet_v2_l
 from torchvision.models import EfficientNet_V2_S_Weights,EfficientNet_V2_M_Weights,EfficientNet_V2_L_Weights
 from torchvision.models import swin_b, Swin_B_Weights
-import timm
+from .swin_autoencoder import SwinTAE
+
 
 
 class Decoder(nn.Module):
-    def __init__(self, channels, kernel_size=4, stride=2, padding=1):
+    def __init__(self, channels, kernel_size=4, stride=2, padding=1, final=nn.Sigmoid):
         super(Decoder, self).__init__()
         
         def conv_block(in_channels, out_channels):
@@ -21,28 +23,28 @@ class Decoder(nn.Module):
             )
             
         layers = [conv_block(channels[i], channels[i + 1]) for i in range(len(channels) - 1)]
-        layers.append(nn.Sigmoid())
+        
+        layers.append(final())
+        
         self.decoder = nn.Sequential(*layers)
         
     def forward(self, x):
         return self.decoder(x)
 
 
-class SwinTAE(nn.Module):
+class EfficientNetV2SAutoencoder(nn.Module):
     def __init__(self):
-        super(SwinTAE, self).__init__()
-        self.encoder = swin_b(Swin_B_Weights.DEFAULT).features
+        super(EfficientNetV2SAutoencoder, self).__init__()
         
-        self.decoder = Decoder([1024, 512, 256, 128, 64, 3])
+        self.encoder = efficientnet_v2_s(EfficientNet_V2_S_Weights.DEFAULT)
+        self.decoder = Decoder([1280, 640, 256, 128, 64, 3])
         
     def forward(self, x):
-        x = self.encoder(x)
-        x = torch.permute(x,(0,3,1,2))
+        x = self.encoder.features(x)
         x = self.decoder(x)
         return x
-
-
-
+    
+    
 class EfficientNetUNet(nn.Module):
     def __init__(self, num_classes=1):
         super(EfficientNetUNet, self).__init__()
@@ -107,15 +109,5 @@ class EfficientNetB0Unet(nn.Module):
         x = self.sigmoid(x)
         return x
 
-class EfficientNetV2SAutoencoder(nn.Module):
-    def __init__(self):
-        super(EfficientNetV2SAutoencoder, self).__init__()
-        
-        self.encoder = efficientnet_v2_s(EfficientNet_V2_S_Weights.DEFAULT)
-        self.decoder = Decoder([1280, 640, 256, 128, 64, 3])
-        
-    def forward(self, x):
-        x = self.encoder.features(x)
-        x = self.decoder(x)
-        return x
+
     

@@ -164,5 +164,5 @@ cython_debug/
 open_source_analysis
 mvtec_anomaly*
 anomaly_maps
-model
+save
 *.png

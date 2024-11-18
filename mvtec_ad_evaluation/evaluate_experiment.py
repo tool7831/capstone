@@ -115,9 +115,9 @@ def parse_dataset_files(object_name, dataset_base_dir, anomaly_maps_dir):
     return gt_filenames, prediction_filenames
 
 
-def calculate_au_pro_au_roc(gt_filenames,
-                            prediction_filenames,
-                            integration_limit):
+def calculate_metrics(gt_filenames,
+                      prediction_filenames,
+                      integration_limit):
     """Compute the area under the PRO curve for a set of ground truth images
     and corresponding anomaly images.
 
@@ -246,7 +246,7 @@ def main():
 
         # Calculate the PRO and ROC curves.
         au_pro, au_roc, pro_curve, roc_curve, pixel_level_metrics, image_level_metrics = \
-            calculate_au_pro_au_roc(
+            calculate_metrics(
                 gt_filenames,
                 prediction_filenames,
                 args.pro_integration_limit)

@@ -4,8 +4,11 @@ from PIL import Image
 from tqdm.auto import tqdm
 from torch.utils.data import Dataset
 from torchvision import transforms
+OBJECT_NAMES = ['bottle', 'cable', 'capsule', 'carpet', 'grid',
+                'hazelnut', 'leather', 'metal_nut', 'pill', 'screw',
+                'tile', 'toothbrush', 'transistor', 'wood', 'zipper']
 class MvtecADDataset(Dataset):
-    def __init__(self, root_dir, split="train", img_size=224):
+    def __init__(self, root_dir, split="train", img_size=224, object_names=OBJECT_NAMES):
         self.root_dir = root_dir
         self.split = split
 
@@ -28,7 +31,7 @@ class MvtecADDataset(Dataset):
         # self.images = []
         # self.masks = []
         
-        for object_type in tqdm(os.listdir(root_dir)):
+        for object_type in object_names:
             object_path = os.path.join(root_dir, object_type)
             if not os.path.isdir(object_path):
                 continue
