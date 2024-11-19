@@ -1,6 +1,5 @@
 import os
 import torch
-import torch.nn as nn
 import argparse
 import random
 import train, test
@@ -8,7 +7,7 @@ from models import autoencoder
 from tqdm.auto import tqdm
 from torch.utils.data import DataLoader, Subset
 from torch.optim.lr_scheduler import ReduceLROnPlateau
-from datasets.dataset import MvtecADDataset
+from datasets.dataset import MvtecADDataset, OBJECT_NAMES
     
 def return_model(model_name:str):
     cls = getattr(autoencoder, model_name)  
@@ -83,9 +82,8 @@ if __name__ == '__main__':
     x_test_fixed = x_test_fixed.to(device)
     
         
-    anomaly_dir = f'anomaly_maps/{save_name}'
-    model = train.train(model, train_loader, valid_loader, args, optimizer, scheduler, device=device, save_name=save_name, x_normal_fixed=x_normal_fixed, x_test_fixed=x_test_fixed)
-    model = test.test(model, test_loader, anomaly_dir, args.RIAD, args.img_size, device=device, save_name=save_name)
+    model = train.train(args, model, train_loader, valid_loader, optimizer, scheduler, device=device, save_name=save_name, x_normal_fixed=x_normal_fixed, x_test_fixed=x_test_fixed)
+    model = test.test(args, model, device=device, save_name=save_name, evaluated_objects=OBJECT_NAMES)
 
    
     

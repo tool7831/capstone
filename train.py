@@ -7,8 +7,9 @@ from losses.gms_loss import MSGMS_Loss
 from tqdm.auto import tqdm
 from utils.gen_mask import gen_mask
 from torchvision.utils import save_image
-
-def train(model, train_loader, valid_loader, args, optimizer, scheduler, device, save_name, x_normal_fixed, x_test_fixed):
+from utils.early_stopping import EarlyStopping
+from utils.save import save_snapshot, save_model
+def train(args, model, train_loader, valid_loader, optimizer, scheduler, device, save_name, x_normal_fixed, x_test_fixed):
     # 학습 루프
     best_loss = 100000
     early_stopping = EarlyStopping(patience=10)
@@ -103,7 +104,7 @@ def train(model, train_loader, valid_loader, args, optimizer, scheduler, device,
             
         scheduler.step(valid_loss / len(valid_loader))
         early_stopping(val_loss=valid_loss / len(valid_loader))
-        best_loss = save(model, train_loss / len(train_loader), valid_loss / len(valid_loader), best_loss, epoch+1, save_name)
+        best_loss = save_model(model, train_loss / len(train_loader), valid_loss / len(valid_loader), best_loss, epoch+1, save_name)
         
         
         print(f"Epoch [{epoch+1}/{args.epochs}], Train Loss: {train_loss / len(train_loader):.4f}, Valid Loss {valid_loss / len(valid_loader):.4f}")
@@ -113,77 +114,3 @@ def train(model, train_loader, valid_loader, args, optimizer, scheduler, device,
             break
 
     return model
-
-
-def save(model, train_loss, valid_loss, best_loss, epoch, save_name):
-    loss_dir =  f"metrics/{save_name}"
-    if not os.path.exists(loss_dir):
-        os.makedirs(loss_dir)
-    with open(loss_dir + '/loss', 'a+') as f:
-        f.write(f'Epoch {epoch}, Train Loss: {train_loss:.4f} Valid Loss: {valid_loss:.4f}\n' ,)
-        
-    if valid_loss < best_loss:
-        if not os.path.exists(f'save/{save_name}'):
-            os.makedirs(f'save/{save_name}')
-        torch.save(model.state_dict(), f'save/{save_name}')
-        best_loss = valid_loss
-        
-    return best_loss
-    
-    
-class EarlyStopping:
-    def __init__(self, patience=5, min_delta=0, verbose=False):
-        """
-        Args:
-            patience (int): Number of epochs to wait after last improvement before stopping.
-            min_delta (float): Minimum improvement to qualify as a new best.
-            verbose (bool): Whether to print information about early stopping.
-        """
-        self.patience = patience
-        self.min_delta = min_delta
-        self.verbose = verbose
-        self.best_score = None
-        self.counter = 0
-        self.early_stop = False
-
-    def __call__(self, val_loss):
-        score = -val_loss
-
-        if self.best_score is None:
-            self.best_score = score
-            if self.verbose:
-                print("Initial best score set.")
-
-        elif score < self.best_score + self.min_delta:
-            self.counter += 1
-            if self.verbose:
-                print(f"EarlyStopping counter: {self.counter} out of {self.patience}")
-            if self.counter >= self.patience:
-                self.early_stop = True
-
-        else:
-            self.best_score = score
-            self.counter = 0
-            if self.verbose:
-                print("Improvement detected, resetting counter.")
-                
-                
-def save_snapshot(x, x2, model, save_dir, save_dir2):
-    model.eval()
-    with torch.no_grad():
-        x_fake_list = x
-        recon = model(x)
-        x_concat = torch.cat((x_fake_list, recon), dim=3)
-        save_image((x_concat.data.cpu()), save_dir, nrow=1, padding=0)
-        print(('Saved real and fake images into {}...'.format(save_dir)))
-
-        x_fake_list = x2
-        recon = model(x2)
-        x_concat = torch.cat((x_fake_list, recon), dim=3)
-        save_image((x_concat.data.cpu()), save_dir2, nrow=1, padding=0)
-        print(('Saved real and fake images into {}...'.format(save_dir2)))
-        
-def denorm(x):
-    """Convert the range from [-1, 1] to [0, 1]."""
-    out = (x + 1) / 2
-    return out.clamp_(0, 1)
