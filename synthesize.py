@@ -29,7 +29,6 @@ class SimpleAD():
             torch.cuda.manual_seed_all(args.seed)
         train_data = MvtecADDataset(root_dir=f"mvtec_anomaly_detection_{args.img_size}", split="train", img_size=args.img_size)
         img_nums = len(train_data)
-        print(img_nums)
         valid_num = int(img_nums * 0.2)
         train_num = img_nums - valid_num
         train_dataset, val_dataset = torch.utils.data.random_split(train_data, [train_num, valid_num])
@@ -108,7 +107,6 @@ class SimpleAD():
             if torch.isinf(images).any():
                 print("Inf detected in input images")
                 continue  # Inf가 포함된 이미지는 건너뛰기
-            
             images = images.to(self.device)
             self.optimizer.zero_grad()
             outputs, mask = self.model.train_model(images)
@@ -177,7 +175,7 @@ class SimpleAD():
                 score = msgms_score(images, outputs)
                 # score = F.mse_loss(images, outputs, reduction='none').mean(dim=1)
                 score = score.squeeze().cpu().numpy()
-                
+
                 for i in range(score.shape[0]):
                     score[i] = gaussian_filter(score[i], sigma=7)
 

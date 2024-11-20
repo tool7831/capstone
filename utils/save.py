@@ -32,7 +32,7 @@ def save_model(model, train_loss, valid_loss, best_loss, epoch, save_name):
     loss_dir =  f"metrics/{save_name}"
     if not os.path.exists(loss_dir):
         os.makedirs(loss_dir)
-    with open(loss_dir + '/loss', 'a+') as f:
+    with open(loss_dir + '/loss', 'w') as f:
         f.write(f'Epoch {epoch}, Train Loss: {train_loss:.4f} Valid Loss: {valid_loss:.4f}\n' ,)
         
     if valid_loss < best_loss:

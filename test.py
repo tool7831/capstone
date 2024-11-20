@@ -2,8 +2,9 @@ import os
 import torch
 import argparse
 import numpy as np
-import models
+
 import json
+from models import autoencoder
 from tqdm.auto import tqdm
 from utils.gen_mask import gen_mask
 from losses.gms_loss import MSGMS_Score
@@ -14,7 +15,7 @@ from eval.evaluate_experiment import *
 from utils.save import *
 
 def return_model(model_name:str):
-    cls = getattr(models, model_name)  
+    cls = getattr(autoencoder, model_name)  
     return cls()
 
 def _test(args, model, test_loader, root_anomaly_map_dir, device):

@@ -12,31 +12,31 @@ from .swin_autoencoder import SwinTAE
 
 
 class Decoder(nn.Module):
-    def __init__(self, channels, blocks, kernel_size=4, stride=2, padding=1, final=nn.Sigmoid):
+    def __init__(self, channels, blocks, kernel_size=4, stride=2, padding=1):
         super(Decoder, self).__init__()
         
-        def up_block(in_channels, out_channels):
+        def up_block(in_channels, out_channels, act=nn.ReLU()):
             return nn.Sequential(
                 nn.ConvTranspose2d(in_channels, out_channels, kernel_size=kernel_size, stride=stride, padding=padding),
-                nn.BatchNorm2d(out_channels),
-                nn.ReLU()
+                act
             )
         def conv_block(in_channels, out_channels):
             return nn.Sequential(
-                nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, stride=stride, padding=padding),
+                nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=3, stride=1, padding=1),
                 nn.ReLU()
             )
             
         layers = []
         for i in range(len(channels) - 1):
             for j in range(blocks[i]):
-                if j == 0:
-                    layers.append(up_block(channels[i], channels[i+1]))
+                if j == blocks[i] - 1:
+                    if i == len(channels) - 2:
+                        layers.append(up_block(channels[i], channels[i+1], nn.Sigmoid()))
+                    else:
+                        layers.append(up_block(channels[i], channels[i+1]))
                 else:
-                    layers.append(conv_block(channels[i+1],channels[i+1]))
-
-        layers.append(final())
-        
+                    layers.append(conv_block(channels[i],channels[i]))
+                
         self.decoder = nn.Sequential(*layers)
         
     def forward(self, x):
